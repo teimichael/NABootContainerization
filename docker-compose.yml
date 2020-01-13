@@ -55,7 +55,7 @@ services:
       dockerfile: web-socket-dockerfile
     working_dir: /web
     ports:
-      - 9010:8080
+      - 9010:9010
     depends_on:
       - mysql-socket
     command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
@@ -71,3 +71,12 @@ services:
       - 9011:3306
     restart: always
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+  web-static:
+    container_name: nabootstatic
+    image: nginx:1.17
+    volumes:
+      /opt/NABootWebStatic:/usr/share/nginx/html
+    ports:
+      - 9020:80
+    restart: always
