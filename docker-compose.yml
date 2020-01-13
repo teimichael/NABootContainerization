@@ -76,7 +76,7 @@ services:
     container_name: nabootstatic
     image: nginx:1.17
     volumes:
-      /opt/NABootWebStatic:/usr/share/nginx/html
+      - /opt/NABootWebStatic:/usr/share/nginx/html
     ports:
       - 9020:80
     restart: always
