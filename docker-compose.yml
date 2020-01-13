@@ -1,0 +1,73 @@
+version: '3'
+services:
+  web-auth:
+    container_name: nabootauth
+    build:
+      context: .
+      dockerfile: web-auth-dockerfile
+    working_dir: /web
+    ports:
+      - 9000:9000
+    depends_on:
+      - mysql-auth
+    command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
+
+  mysql-auth:
+    container_name: nabootauth-mysql
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: nabootauth
+      MYSQL_ROOT_PASSWORD: nabootauth
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - 9001:3306
+    restart: always
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+ web-service:
+   container_name: nabootweb
+   build:
+     context: .
+     dockerfile: web-service-dockerfile
+   working_dir: /web
+   ports:
+     - 8080:8080
+   depends_on:
+     - mysql-service
+   command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
+
+ mysql-service:
+   container_name: nabootweb-mysql
+   image: mysql:8.0
+   environment:
+     MYSQL_DATABASE: nabootweb
+     MYSQL_ROOT_PASSWORD: nabootweb
+     MYSQL_ROOT_HOST: '%'
+   ports:
+     - 8081:3306
+   restart: always
+   command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+ web-socket:
+   container_name: nabootsocket
+   build:
+     context: .
+     dockerfile: web-socket-dockerfile
+   working_dir: /web
+   ports:
+     - 9010:8080
+   depends_on:
+     - mysql-socket
+   command: mvn clean spring-boot:run -Dspring-boot.run.profiles=prod
+
+ mysql-socket:
+   container_name: nabootsocket-mysql
+   image: mysql:8.0
+   environment:
+     MYSQL_DATABASE: nabootsocket
+     MYSQL_ROOT_PASSWORD: nabootsocket
+     MYSQL_ROOT_HOST: '%'
+   ports:
+     - 9011:3306
+   restart: always
+   command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
