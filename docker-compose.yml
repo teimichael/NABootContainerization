@@ -25,11 +25,13 @@ services:
     command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
 
   web-service:
-    container_name: nabootweb
+    container_name: nabootwebservice
     build:
       context: .
       dockerfile: web-service-dockerfile
     working_dir: /web
+    volumes:
+      - /opt/NABootWebStatic:/opt/NABootWebStatic
     ports:
       - 8080:8080
     depends_on:
